@@ -1,0 +1,22 @@
+﻿JWT (JSON Web Token)
+是一個用來加密傳輸的規範, 將認證的token分為三部分
+
+1. Header : 記錄類別和加密演算法
+{
+  "typ": "JWT",  // 聲明為JWT類型
+  "alg": "HS256" // 聲明加密的演算法
+}
+
+2. Payload : Request Body
+{
+ "iss": "www.api.com", //  issuer - JWT簽發者, 通常是放 API 網址
+ "iat": 1441593502,  //  issued at - 簽發時間 
+ "exp": 1441594722, //  expiration - 有效期限
+ "aud": "www.example.com", //  audience - 通常是放前端網址 ( Header 的 Origin ) 才能識別當初 token 是發給誰！
+ "nbf": 1441235676, // 不得早於哪個時間， token 暫時還不生效的意思
+ "jti": "zxkdfksfmnjn23" // JWT 的唯一身份標識，主要用來作為一次性token
+}
+
+3. Signature(Verify) : 由 Server 端驗證，認 token 來執行 request，裡面帶有 secret key
+將header 和 payload 用 base64 編碼後用 . 連接起來, 再用聲明的演算法和secret key 去編碼 形成 signature
+signature = HMACSHA256(base64UrlEncode(header) + '.' + base64UrlEncode(payload), 'secret_key');
